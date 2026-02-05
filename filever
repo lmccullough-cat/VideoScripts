@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Wrapper script to call Get-FileVersion.ps1 from Git Bash
+# Usage: fileversion <filepath>
+
+if [ $# -eq 0 ]; then
+    echo "Usage: fileversion <filepath>"
+    exit 1
+fi
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Convert Unix path to Windows path if needed
+FILE_PATH="$1"
+
+# Call PowerShell script with the provided argument
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$SCRIPT_DIR/Get-FileVersion.ps1" "$FILE_PATH"
