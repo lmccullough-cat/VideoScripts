@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Extract the base filename without path and extension
+SOURCE_BASENAME=$(basename "$1")
+OUTPUT_FILE="${SOURCE_BASENAME}.txt"
+
+~/bin/ffprobe -hide_banner -show_frames -show_entries stream_tags=duration "$1" 2>&1 1>"$OUTPUT_FILE"
+echo "Ran ffprobe"
+GOP=0;
+
+KEYFRAMES=0;
+FRAMES=0;
+RESULT=0;
+MAXGOP_SIZE=0;
+
+
+while read p; do
+if [ ${p:0:11} == "pict_type=B" ]
+  then
+    GOP=$((GOP+1))
+    FRAMES=$((FRAMES+1))
+    # printf "B" 
+fi
+
+if [ ${p:0:11} == "pict_type=P" ]
+  then
+    GOP=$((GOP+1))
+    FRAMES=$((FRAMES+1))
+    # printf "P" 
+fi
+
+if [ ${p:0:11} == "pict_type=I" ]
+then
+  GOP=$((GOP+1))
+  KEYFRAMES=$((KEYFRAMES+1))
+  FRAMES=$((FRAMES+1))
+  # printf "I"
+  # echo $GOP
+  if [ "$GOP" -gt "$MAXGOP_SIZE" ]
+  then
+    MAXGOP_SIZE=$GOP
+  fi
+  GOP=0;
+fi
+
+p_len=${#p}
+
+# if [ ${p:0:8} == "pkt_dts=" ]
+#   then
+#      printf " $p\r\n" 
+# fi
+
+# if [ ${p:0:4} == "pts=" ]
+#   then
+#      printf " $p\r\n" 
+# fi
+
+# if [ ${p:0:8} == "\[/FRAME\]" ]
+# then
+#    printf "\nframe end"
+# fi
+
+done < "$OUTPUT_FILE"
+
+
+
+echo 
+printf "frame count:\t\t$FRAMES\n"
+printf "keyframes:\t\t$KEYFRAMES\n"
+echo
+RESULT=$((FRAMES/KEYFRAMES))
+printf "ave. gop size:\t$RESULT\n"
+printf "max. gop size:\t$MAXGOP_SIZE\n"
