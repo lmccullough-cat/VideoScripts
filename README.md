@@ -42,7 +42,17 @@ Builds a Qt-based Match Tracker American Football application using qmake and ma
 ### clean_build_mtab.sh
 Performs a clean build of the Match Tracker application by removing the existing build directory and rebuilding from scratch.
 
+### flatten_batch.bat 
+calls flatten (assumes that flatten in the current dir) on all the mp4 or ts files in a given folder saves the results to .log files in a folder called results 
 ## Network Tools
 
 ### ping_all.bat
 Network scanner that pings all IP addresses in the 172.16.101.0/24 subnet (1-254) and saves responding addresses to c:\ipaddresses.txt.
+
+## Old tools
+
+### windiff.exe
+diff tool that used to be in visual studio. good for diffing folders
+
+### filevr(.cmd)
+commandline wrapper around a powershell script to get the file version of a given file
